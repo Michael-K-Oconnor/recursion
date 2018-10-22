@@ -42,8 +42,9 @@ var stringifyJSON = function(obj) {
       subElements.forEach(function(elem) {
         var key = elem[0];
         var value = elem[1];
-        substring = substring + stringifyElement({key: value});
+        substring += stringifyElement({[key]: value}).slice(1,-1) + ', ';
       });
+      substring = substring.slice(0,-2);
       return '{' + substring + '}';
 
     } else if (currType === 'single complex obj element') {
@@ -114,6 +115,5 @@ var stringifyObjElement = function(elem) {
     // returns a string of the key/value pair
     var key = Object.keys(elem)[0];
     var value = Object.values(elem)[0];
-    return ('"' + String(key) + '": "' + String(value) + '"');
+    return ('{"' + String(key) + '": "' + String(value) + '"}');
 }
-
