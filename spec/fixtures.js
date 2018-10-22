@@ -125,3 +125,22 @@ unparseableStrings = [
   '["foo", "bar"',
   // '["foo", "bar\\"]'
 ];
+
+
+
+var elemDataTypeTestCases = [
+  [ [],                 'empty array'],
+  [ {},                 'empty obj'],
+  [true,                'single array element'],
+  [42,                  'single array element'],
+  ['foo',               'single array element'],
+  [null,                'single array element'],
+  [[1],                 'array'],
+  [[1,2],               'array'],
+  [{'a':{'b':'c'}},     'single complex obj element'],
+  [{'a':['b', 42]},     'single complex obj element'],
+  [{'a':'b'},           'single simple obj element'],
+  [{'a':'b', 'c':'d'},  'obj'],
+  [function(){},        'function'],
+  [undefined,           undefined]
+];
