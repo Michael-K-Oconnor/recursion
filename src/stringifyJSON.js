@@ -12,7 +12,6 @@ var stringifyJSON = function(obj) {
 
   var stringifyElement = function(currElement) {
     currType = elemDataType(currElement);
-
     // BASE CASES
     if (currType === 'empty array') {
       return '[]';
@@ -31,9 +30,9 @@ var stringifyJSON = function(obj) {
     } else if (currType === 'array') {
       var substring = '';
       currElement.forEach(function(elem) {
-        substring = substring + stringifyElement(elem) + ', ';
+        substring = substring + stringifyElement(elem) + ',';
       });
-      substring = substring.slice(0,-2);
+      substring = substring.slice(0,-1);
       return '[' + substring + ']';
         
     } else if (currType === 'obj') {
@@ -42,13 +41,21 @@ var stringifyJSON = function(obj) {
       subElements.forEach(function(elem) {
         var key = elem[0];
         var value = elem[1];
-        substring += stringifyElement({[key]: value}).slice(1,-1) + ', ';
+        if (elemDataType(value) === 'function' || elemDataType(value) === undefined) {
+          
+        } else {
+          substring += stringifyElement({[key]: value}).slice(1,-1) + ',';
+        }
       });
-      substring = substring.slice(0,-2);
+      substring = substring.slice(0,-1);
       return '{' + substring + '}';
 
     } else if (currType === 'single complex obj element') {
-            
+      var key = Object.keys(currElement)[0];
+      var value = Object.values(currElement)[0];
+      var substring = '';
+      substring = '{"' + String(key) + '":' + stringifyElement(value) + '}';
+      return substring;
     }
 
   }
@@ -82,7 +89,7 @@ var elemDataType = function(elem) {
 
     if (isObject(elem) && Object.keys(elem).length === 1) {
       var value = Object.values(elem)[0];
-      if (isObject(value) || Array.isArray(value) || typeof value === 'function') {
+      if (isObject(value) || Array.isArray(value)) {
         return ('single complex obj element');
       } else {
         return ('single simple obj element');
@@ -108,6 +115,9 @@ var isObject = function(elem) {
 
 var stringifyArrayElement = function(elem) {
     // returns a string of the element
+    if (typeof elem === 'string') {
+      return '"' + elem + '"';
+    }
     return String(elem);
 }
 
@@ -115,5 +125,12 @@ var stringifyObjElement = function(elem) {
     // returns a string of the key/value pair
     var key = Object.keys(elem)[0];
     var value = Object.values(elem)[0];
-    return ('{"' + String(key) + '": "' + String(value) + '"}');
+    if (typeof value === 'function') {
+      return {}
+    } else if (typeof value === 'string') {
+      return ('{"' + String(key) + '":"' + String(value) + '"}');
+    } else {
+      return ('{"' + String(key) + '":' + String(value) + '}');
+    }
+    
 }
